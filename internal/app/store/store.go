@@ -2,7 +2,7 @@ package store
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 
 	_ "github.com/lib/pq"
 )
@@ -19,17 +19,18 @@ func New(config *Config) *Store {
 }
 
 func (s *Store) Open() error {
-	fmt.Println("ERROR CONECTION1!")
-	fmt.Println(s.config.DatabaseURL)
+	log.Println("ERROR CONECTION1!")
+	log.Println(s.config.DatabaseURL)
 	db, err := sql.Open("postgres", s.config.DatabaseURL)
 	if err != nil {
-		fmt.Println("ERROR CONECTION!")
+		log.Println("ERROR CONECTION!")
 		return err
 	}
 
 	if err := db.Ping(); err != nil {
 		return err
 	}
+	log.Println("Connect with DB!")
 	return nil
 }
 
