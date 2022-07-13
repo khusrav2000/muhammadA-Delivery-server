@@ -3,9 +3,9 @@ package apiserver
 import "github.com/khusrav2000/muhammadA-Delivery-server/internal/app/store"
 
 type Config struct {
-	BindAddr string `toml: "bind_addr"`
-	LogLevel string `toml: "log_level"`
-	Store    *store.Config
+	BindAddr string        `toml:"bind_addr"`
+	LogLevel string        `toml:"log_level"`
+	Store    *store.Config `toml:"store"`
 }
 
 func NewConfig() *Config {
