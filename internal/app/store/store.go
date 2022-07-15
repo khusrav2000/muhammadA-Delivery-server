@@ -30,6 +30,7 @@ func (s *Store) Open() error {
 	if err := db.Ping(); err != nil {
 		return err
 	}
+	s.db = db
 	log.Println("Connect with DB!")
 	return nil
 }
