@@ -21,10 +21,31 @@ func TestUser_Validate(t *testing.T) {
 			isValid: true,
 		},
 		{
+			name: "with encrypted password",
+			u: func() *model.User {
+				u := model.TestUser(t)
+				u.Password = ""
+				u.EncryptedPassword = "encryptedpassword"
+				return u
+			},
+			isValid: true,
+		},
+		{
 			name: "empty email",
 			u: func() *model.User {
 				u := model.TestUser(t)
 				u.Email = ""
+				u.Password = ""
+				return u
+			},
+			isValid: false,
+		},
+		{
+			name: "short password",
+			u: func() *model.User {
+				u := model.TestUser(t)
+				u.Email = ""
+				u.Password = "short"
 				return u
 			},
 			isValid: false,
