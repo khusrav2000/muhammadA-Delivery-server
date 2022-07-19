@@ -1,3 +1,4 @@
 bind_addr=":8081"
 log_level="error"
 database_url="host=localhost port=5432 dbname=dv_muhammada sslmode=disable"
+session_key="fho4ihry3489ofhisfgkq3o84eirlbne597309247398o47v3nuehtrkertv38tyhnevfyvin2893ehv238vo8v92yv32n389yovnkw"
