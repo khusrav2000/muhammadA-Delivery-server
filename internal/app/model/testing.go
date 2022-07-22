@@ -5,7 +5,7 @@ import "testing"
 func TestUser(t *testing.T) *User {
 	t.Helper()
 	return &User{
-		Email:    "user@example.com",
+		Login:    "userkhusrav",
 		Password: "password",
 	}
 }

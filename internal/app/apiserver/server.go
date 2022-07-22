@@ -59,11 +59,41 @@ func (s *server) configureRouter() {
 	s.router.Use(s.logRequest)
 	s.router.Use(handlers.CORS(handlers.AllowedOrigins([]string{"*"})))
 	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
-	s.router.HandleFunc("/sessions", s.handleSessionsCreate()).Methods("POST")
+	s.router.HandleFunc("/login", s.handleSessionsCreate()).Methods("POST")
 
+	// private need authenticate
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
+
+	/*
+		// users
+		private.HandleFunc("/users/id", s.handleUsersGetByID()).Methods("GET") // get user info
+		private.HandleFunc("/users/id", s.handleUsersUpdate()).Methods("POST") // update user
+
+		// Points (Pharmacies)
+		private.HandleFunc("/points", s.handlePointsCreate()).Methods("POST")          // add new point (pharmacy)
+		private.HandleFunc("/points", s.handlePoints()).Methods("GET")                 // get all points by user access
+		private.HandleFunc("/points/id", s.handlePointsUpdate()).Methods("POST")       // update point
+		private.HandleFunc("/points/id", s.handlePointsGetByID()).Methods("GET")       // get point info by ID
+		private.HandleFunc("/points/id", s.handlePointsDeleteByID()).Methods("DELETE") // delete point
+		private.HandleFunc("/points/search", s.handlePointsSearch()).Methods("GET")    // search points and get list point
+
+		// Products
+		private.HandleFunc("/products", s.handleProductsCreate()).Methods("POST")          // add new product
+		private.HandleFunc("/products", s.handleProducts()).Methods("GET")                 // get all products in which there is access
+		private.HandleFunc("/products/id", s.handleProductsGetByID()).Methods("GET")       // get product info by id
+		private.HandleFunc("/products/id", s.handleProductsDeleteByID()).Methods("DELETE") // delete product
+		private.HandleFunc("/products/search", s.handleProductsSearch()).Methods("GET")    // search product by ...
+
+		// Orders
+		private.HandleFunc("/orders", s.handleOrdersCreate()).Methods("POST")              // create new order
+		private.HandleFunc("/orders", s.handleOrders()).Methods("GET")                     // get all orders in which there is access
+		private.HandleFunc("/orders/id", s.handleOrdersGetByID()).Methods("GET")           // get order info with ID
+		private.HandleFunc("/orders/id/delivered", s.handleOrdersDelivered()).Methods("?") // make order delivered
+		private.HandleFunc("/orders/filter", s.handleOrdersFilter()).Methods("GET")        // get orders by filter
+	*/
+
 }
 
 func (s *server) setRequestID(next http.Handler) http.Handler {
@@ -125,7 +155,7 @@ func (s *server) handleWhoami() http.HandlerFunc {
 
 func (s *server) handleUsersCreate() http.HandlerFunc {
 	type request struct {
-		Email    string `json:"email"`
+		Login    string `json:"login"`
 		Password string `json:"password"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -135,7 +165,7 @@ func (s *server) handleUsersCreate() http.HandlerFunc {
 			return
 		}
 		u := &model.User{
-			Email:    req.Email,
+			Login:    req.Login,
 			Password: req.Password,
 		}
 
@@ -162,7 +192,7 @@ func (s *server) handleSessionsCreate() http.HandlerFunc {
 			return
 		}
 
-		u, err := s.store.User().FindByEmail(req.Email)
+		u, err := s.store.User().FindByLogin(req.Email)
 		if err != nil || !u.ComparePassword(req.Password) {
 			s.error(w, r, http.StatusUnauthorized, errIncorrectEmailOrPassword)
 		}

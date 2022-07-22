@@ -34,7 +34,7 @@ func TestUser_Validate(t *testing.T) {
 			name: "empty email",
 			u: func() *model.User {
 				u := model.TestUser(t)
-				u.Email = ""
+				u.Login = ""
 				u.Password = ""
 				return u
 			},
@@ -44,7 +44,7 @@ func TestUser_Validate(t *testing.T) {
 			name: "short password",
 			u: func() *model.User {
 				u := model.TestUser(t)
-				u.Email = ""
+				u.Login = ""
 				u.Password = "short"
 				return u
 			},

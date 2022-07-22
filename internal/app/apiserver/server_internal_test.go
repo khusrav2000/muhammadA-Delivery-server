@@ -113,7 +113,7 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 		{
 			name: "valid",
 			payload: map[string]string{
-				"email":    u.Email,
+				"login":    u.Login,
 				"password": u.Password,
 			},
 			expectedCode: http.StatusOK,
@@ -124,9 +124,9 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 			expectedCode: http.StatusBadRequest,
 		},
 		{
-			name: "invalid email",
+			name: "invalid login",
 			payload: map[string]string{
-				"email":    "invalid",
+				"login":    "invalid",
 				"password": u.Password,
 			},
 			expectedCode: http.StatusUnauthorized,
@@ -134,7 +134,7 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 		{
 			name: "invalid password",
 			payload: map[string]string{
-				"email":    u.Email,
+				"login":    u.Login,
 				"password": "invalid",
 			},
 			expectedCode: http.StatusUnauthorized,
