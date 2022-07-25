@@ -34,6 +34,15 @@ func (r *UserRepository) Find(id int) (*model.User, error) {
 	return u, nil
 }
 
+func (r *UserRepository) GetProfile(u *model.User) error {
+	_, ok := r.users[u.ID]
+	if !ok {
+		return store.ErrRecordNotFound
+	}
+
+	return nil
+}
+
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	for _, u := range r.users {
 		if u.Login == login {
@@ -42,4 +51,8 @@ func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	}
 
 	return nil, store.ErrRecordNotFound
+}
+
+func (r *UserRepository) CheckAccessFor(u *model.User, access string) (bool, error) {
+	return true, nil
 }

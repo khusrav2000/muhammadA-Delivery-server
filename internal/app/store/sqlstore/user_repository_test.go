@@ -30,7 +30,7 @@ func TestUserRepository_Find(t *testing.T) {
 	assert.NotNil(t, u2)
 }
 
-func TestUserRepository_FindByEmail(t *testing.T) {
+func TestUserRepository_FindByLogin(t *testing.T) {
 	db, teardown := sqlstore.TestDB(t, databaseURL)
 	defer teardown("users")
 	s := sqlstore.New(db)

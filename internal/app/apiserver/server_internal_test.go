@@ -68,7 +68,7 @@ func TestServer_HandleUsersCreate(t *testing.T) {
 		{
 			name: "valid",
 			payload: map[string]string{
-				"email":    "user@example.com",
+				"login":    "userkhusrav",
 				"password": "password",
 			},
 			expectedCode: http.StatusCreated,
@@ -81,7 +81,7 @@ func TestServer_HandleUsersCreate(t *testing.T) {
 		{
 			name: "invalid params",
 			payload: map[string]string{
-				"email": "invalid",
+				"login": "invalid",
 			},
 			expectedCode: http.StatusUnprocessableEntity,
 		},
@@ -146,7 +146,7 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 			rec := httptest.NewRecorder()
 			b := &bytes.Buffer{}
 			json.NewEncoder(b).Encode(tc.payload)
-			req, _ := http.NewRequest(http.MethodPost, "/sessions", b)
+			req, _ := http.NewRequest(http.MethodPost, "/login", b)
 			s.ServeHTTP(rec, req)
 			assert.Equal(t, tc.expectedCode, rec.Code)
 		})

@@ -24,8 +24,9 @@ const (
 )
 
 var (
-	errIncorrectEmailOrPassword = errors.New("incorect email or password")
+	errIncorrectLoginOrPassword = errors.New("incorect login or password")
 	errNotAuthenticated         = errors.New("not authenticated")
+	errNoPermission             = errors.New("no permission")
 )
 
 type ctxKey int8
@@ -58,13 +59,16 @@ func (s *server) configureRouter() {
 	s.router.Use(s.setRequestID)
 	s.router.Use(s.logRequest)
 	s.router.Use(handlers.CORS(handlers.AllowedOrigins([]string{"*"})))
-	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
 	s.router.HandleFunc("/login", s.handleSessionsCreate()).Methods("POST")
 
 	// private need authenticate
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
+
+	// users
+	private.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
+	private.HandleFunc("/myprofile", s.handleMyProfile()).Methods("GET")
 
 	/*
 		// users
@@ -157,16 +161,34 @@ func (s *server) handleUsersCreate() http.HandlerFunc {
 	type request struct {
 		Login    string `json:"login"`
 		Password string `json:"password"`
+		Role     string `json:"role"`
+		Name     string `json:"name"`
+		Surname  string `json:"surname"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &request{}
+		log.Println("START CREATE USER!")
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			s.error(w, r, http.StatusBadRequest, err)
+			return
+		}
+		user := r.Context().Value(ctxKeyUser).(*model.User)
+		log.Println(user)
+		hasAccess, err := s.store.User().CheckAccessFor(user, "create_users")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		if !hasAccess {
+			s.error(w, r, http.StatusBadRequest, errNoPermission)
 			return
 		}
 		u := &model.User{
 			Login:    req.Login,
 			Password: req.Password,
+			Role:     req.Role,
+			Name:     req.Name,
+			Surname:  req.Surname,
 		}
 
 		if err := s.store.User().Create(u); err != nil {
@@ -180,33 +202,46 @@ func (s *server) handleUsersCreate() http.HandlerFunc {
 
 func (s *server) handleSessionsCreate() http.HandlerFunc {
 	type request struct {
-		Email    string `json:"email"`
+		Login    string `json:"login"`
 		Password string `json:"password"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &request{}
-
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			s.error(w, r, http.StatusBadRequest, err)
 			return
 		}
-
-		u, err := s.store.User().FindByLogin(req.Email)
+		u, err := s.store.User().FindByLogin(req.Login)
 		if err != nil || !u.ComparePassword(req.Password) {
-			s.error(w, r, http.StatusUnauthorized, errIncorrectEmailOrPassword)
+			s.error(w, r, http.StatusUnauthorized, errIncorrectLoginOrPassword)
+			return
 		}
 
 		session, err := s.sessionStore.Get(r, sessionName)
 		if err != nil {
 			s.error(w, r, http.StatusInternalServerError, err)
+			return
 		}
 
 		session.Values["user_id"] = u.ID
 		if err := s.sessionStore.Save(r, w, session); err != nil {
 			s.error(w, r, http.StatusInternalServerError, err)
+			return
 		}
 		s.respond(w, r, http.StatusOK, nil)
+	}
+}
+
+func (s *server) handleMyProfile() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := r.Context().Value(ctxKeyUser).(*model.User)
+
+		if err := s.store.User().GetProfile(user); err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		s.respond(w, r, http.StatusOK, user)
 	}
 }
 

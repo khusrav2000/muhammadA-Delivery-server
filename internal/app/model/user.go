@@ -10,6 +10,9 @@ type User struct {
 	Login             string `json:"login"`
 	Password          string `json:"password,omitempty"`
 	EncryptedPassword string `json:"-"`
+	Name              string `json:"name"`
+	Surname           string `json:"surname"`
+	Role              string `json:"role"`
 }
 
 func (u *User) Validate() error {

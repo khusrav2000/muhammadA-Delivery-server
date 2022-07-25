@@ -26,7 +26,7 @@ func TestUserRepository_Find(t *testing.T) {
 	assert.NotNil(t, u2)
 }
 
-func TestUserRepository_FindByEmail(t *testing.T) {
+func TestUserRepository_FindByLogin(t *testing.T) {
 	s := teststore.New()
 	login := "userkhusrav"
 	_, err := s.User().FindByLogin(login)

@@ -5,4 +5,7 @@ build:
 .PHONY: test
 test: 
 				go test -v -race -timeout 30s  ./...
+
+admin:
+				go build -v ./internal/createadmin
 .DEFAULT_GOAL := build

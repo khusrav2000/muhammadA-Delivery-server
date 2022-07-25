@@ -31,7 +31,7 @@ func TestUser_Validate(t *testing.T) {
 			isValid: true,
 		},
 		{
-			name: "empty email",
+			name: "empty login",
 			u: func() *model.User {
 				u := model.TestUser(t)
 				u.Login = ""
