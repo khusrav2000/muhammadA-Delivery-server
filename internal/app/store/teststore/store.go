@@ -6,7 +6,8 @@ import (
 )
 
 type Store struct {
-	userRepository *UserRepository
+	userRepository     *UserRepository
+	pharmacyRepository *PharmacyRepository
 }
 
 func New() *Store {
@@ -23,4 +24,16 @@ func (s *Store) User() store.UserRepository {
 		users: make(map[int]*model.User),
 	}
 	return s.userRepository
+}
+
+func (s *Store) Pharmacy() store.PharmacyRepository {
+	if s.pharmacyRepository != nil {
+		return s.pharmacyRepository
+	}
+
+	s.pharmacyRepository = &PharmacyRepository{
+		store:      s,
+		pharmacies: make(map[int]*model.Pharmacy),
+	}
+	return s.pharmacyRepository
 }

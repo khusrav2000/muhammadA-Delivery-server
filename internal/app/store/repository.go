@@ -9,3 +9,7 @@ type UserRepository interface {
 	FindByLogin(string) (*model.User, error)
 	CheckAccessFor(*model.User, string) (bool, error)
 }
+
+type PharmacyRepository interface {
+	Create(*model.Pharmacy) error
+}

@@ -70,14 +70,17 @@ func (s *server) configureRouter() {
 	private.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
 	private.HandleFunc("/myprofile", s.handleMyProfile()).Methods("GET")
 
+	// Point (Pharmacies)
+	private.HandleFunc("/pharmacies", s.handlePharmacyCreate()).Methods("POST") // add new point (pharmacy)
+	//private.HandleFunc("/pharmacies", s.handlePharmacies()).Methods("GET")                 // get all points by user access
+
 	/*
 		// users
 		private.HandleFunc("/users/id", s.handleUsersGetByID()).Methods("GET") // get user info
 		private.HandleFunc("/users/id", s.handleUsersUpdate()).Methods("POST") // update user
 
 		// Points (Pharmacies)
-		private.HandleFunc("/points", s.handlePointsCreate()).Methods("POST")          // add new point (pharmacy)
-		private.HandleFunc("/points", s.handlePoints()).Methods("GET")                 // get all points by user access
+
 		private.HandleFunc("/points/id", s.handlePointsUpdate()).Methods("POST")       // update point
 		private.HandleFunc("/points/id", s.handlePointsGetByID()).Methods("GET")       // get point info by ID
 		private.HandleFunc("/points/id", s.handlePointsDeleteByID()).Methods("DELETE") // delete point
