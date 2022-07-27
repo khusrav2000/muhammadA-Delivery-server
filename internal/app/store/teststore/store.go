@@ -8,6 +8,7 @@ import (
 type Store struct {
 	userRepository     *UserRepository
 	pharmacyRepository *PharmacyRepository
+	orderRepository    *OrderRepository
 }
 
 func New() *Store {
@@ -36,4 +37,14 @@ func (s *Store) Pharmacy() store.PharmacyRepository {
 		pharmacies: make(map[int]*model.Pharmacy),
 	}
 	return s.pharmacyRepository
+}
+
+func (s *Store) Order() store.OrderRepository {
+	if s.orderRepository != nil {
+		return s.orderRepository
+	}
+	s.orderRepository = &OrderRepository{
+		store: s,
+	}
+	return s.orderRepository
 }

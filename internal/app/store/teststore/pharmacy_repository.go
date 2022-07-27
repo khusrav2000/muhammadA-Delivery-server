@@ -13,3 +13,12 @@ func (r *PharmacyRepository) Create(p *model.Pharmacy) error {
 
 	return nil
 }
+
+func (r *PharmacyRepository) GetPharmacies() (*[]model.Pharmacy, error) {
+	pharmacies := make([]model.Pharmacy, 0)
+	return &pharmacies, nil
+}
+
+func (r *PharmacyRepository) UpdatePharmacy(p *model.Pharmacy, id int) error {
+	return nil
+}

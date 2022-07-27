@@ -71,8 +71,9 @@ func (s *server) configureRouter() {
 	private.HandleFunc("/myprofile", s.handleMyProfile()).Methods("GET")
 
 	// Point (Pharmacies)
-	private.HandleFunc("/pharmacies", s.handlePharmacyCreate()).Methods("POST") // add new point (pharmacy)
-	//private.HandleFunc("/pharmacies", s.handlePharmacies()).Methods("GET")                 // get all points by user access
+	private.HandleFunc("/pharmacies", s.handlePharmacyCreate()).Methods("POST")      // add new point (pharmacy)
+	private.HandleFunc("/pharmacies", s.handlePharmacies()).Methods("GET")           // get all points by user access
+	private.HandleFunc("/pharmacies/{id}", s.handleUpdatePharmacy()).Methods("POST") // update pharmacy :id
 
 	/*
 		// users
@@ -80,8 +81,6 @@ func (s *server) configureRouter() {
 		private.HandleFunc("/users/id", s.handleUsersUpdate()).Methods("POST") // update user
 
 		// Points (Pharmacies)
-
-		private.HandleFunc("/points/id", s.handlePointsUpdate()).Methods("POST")       // update point
 		private.HandleFunc("/points/id", s.handlePointsGetByID()).Methods("GET")       // get point info by ID
 		private.HandleFunc("/points/id", s.handlePointsDeleteByID()).Methods("DELETE") // delete point
 		private.HandleFunc("/points/search", s.handlePointsSearch()).Methods("GET")    // search points and get list point

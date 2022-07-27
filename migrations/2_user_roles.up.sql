@@ -10,6 +10,7 @@ CREATE TYPE permission as ENUM(
     'orders',
     'favorite',
     'profile',
+    'pharmacies',
     'create_users',
     'edit_users',
     'delete_users',

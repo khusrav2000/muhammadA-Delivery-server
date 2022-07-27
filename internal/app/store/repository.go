@@ -12,4 +12,6 @@ type UserRepository interface {
 
 type PharmacyRepository interface {
 	Create(*model.Pharmacy) error
+	GetPharmacies() (*[]model.Pharmacy, error)
+	UpdatePharmacy(*model.Pharmacy, int) error
 }
